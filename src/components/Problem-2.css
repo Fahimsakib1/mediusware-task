@@ -5,3 +5,16 @@
     padding-left: 5px;
     cursor: pointer;
 }
+
+
+
+.flag-width {
+    width: 250px;
+    height: 130px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 15px
+}

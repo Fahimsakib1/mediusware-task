@@ -1,9 +1,9 @@
 import React from 'react'
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 export default function Index() {
-  return (
-    <div className="container">
+    return (
+        <div className="container">
             <div className="align-items-center justify-content-center row vh-100">
                 <div className="col-8">
                     <ul className="align-content-center flex-column gap-3 mb-3 nav nav-pills">
@@ -17,5 +17,5 @@ export default function Index() {
                 </div>
             </div>
         </div>
-  )
+    )
 }
