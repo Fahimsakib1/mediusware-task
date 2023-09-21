@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import toast from 'react-hot-toast';
-
+import './Problem-2.css'
 
 
 
@@ -19,16 +19,24 @@ const Problem2 = () => {
     const [allContacts, setAllContacts] = useState([])
     const handleAllContactsClick = () => {
         setModalShow(true);
+        setModalShow1(false);
+        setModalShowC(false);
         fetch('https://contact.mediusware.com/api/contacts/')
             .then(res => res.json())
             .then(data => setAllContacts(data.results))
         setChecked(false);
-        console.log("Check Value Fetch Function: ", checked);
     }
 
 
+
+    const [USContacts, setUSContacts] = useState([])
     const handleUSContactsClick = () => {
-        setModalShow1(true)
+        setModalShow1(true);
+        setModalShow(false);
+        setModalShowC(false);
+        fetch('https://contact.mediusware.com/api/country-contacts/United States/')
+            .then(res => res.json())
+            .then(data => setUSContacts(data.results))
     }
 
 
@@ -52,6 +60,14 @@ const Problem2 = () => {
 
 
 
+    const [modalCData, setModalCData] = useState('')
+    const handleOpenModalC = (data) => {
+        console.log("Data: ", data);
+        setModalCData(data);
+        // setModalShow(false);
+        setModalShow1(false)
+        setModalShowC(true);
+    }
 
 
 
@@ -61,10 +77,14 @@ const Problem2 = () => {
 
 
 
+
+
+    const drink = dislikeCoke ? 'fanta' : likesCherry ? 'cherryCoke' : 'dietCoke';
 
 
     const [modalShow, setModalShow] = useState(false);
     const [modalShow1, setModalShow1] = useState(false);
+    const [modalShowC, setModalShowC] = useState(false);
     function MyVerticallyCenteredModal(props) {
         return (
             <Modal
@@ -98,19 +118,48 @@ const Problem2 = () => {
                             <>
                                 {
                                     allContacts?.map((data, index) => (
-                                        <div className='d-flex  gap-3' key={index}>
-                                            <p className=''>⦿ <span className='fw-bold'>Country:</span> {data?.country.name}</p>
-                                            <p>⦿ <span className='fw-bold'>Phone:</span> {data?.phone}</p>
+                                        <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                            
+                                            {/* <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold ${data?.country.name === 'United States' ? 'text-primary' : 'text-success'}`}>{data?.country.name}</span></p> */}
+
+
+                                            <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold ${data?.country.name === 'United States' && 'text-primary'}  ${data?.country.name === 'Bangladesh' ? 'text-success' : 'text-danger'}`}>{data?.country.name}</span></p>
+
+                                            <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold ${data?.country.name === 'United States' && 'text-primary'} ${data?.country.name === 'Bangladesh' ? 'text-success' : 'text-danger'}`}>{data?.phone}</span></p>
                                         </div>
                                     ))
                                 }
+
+
+
+                                <div>
+                                    {
+                                        isNull
+                                            ?
+                                            null
+                                            :
+                                            (
+                                                isEmpty
+                                                    ? <p>Sorry, the list is empty.</p>
+                                                    : <div>{list.map(item => <ListItem item={item} />)}</div>
+                                            )
+                                    }
+
+                                    
+                                </div>
+
+
+
                             </>
+
+
+
 
                     }
 
                     <div className="d-flex justify-content-center mt-5 gap-3">
                         <button className="btn btn-lg btn-outline-primary" type="button">All Contacts</button>
-                        <button className="btn btn-lg btn-outline-success" type="button" onClick={() => setModalShow1(true)}>US Contacts</button>
+                        <button className="btn btn-lg btn-outline-success" type="button" onClick={handleUSContactsClick}>US Contacts</button>
                         <button className="btn btn-lg btn-danger" type="button" onClick={props.onHide} >Close</button>
                     </div>
                 </Modal.Body>
@@ -159,8 +208,20 @@ const Problem2 = () => {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="d-flex justify-content-center gap-3">
-                        <button className="btn btn-lg btn-outline-primary" type="button" onClick={() => setModalShow(true)}>All Contacts</button>
+
+
+                    {
+                        USContacts?.map((data, index) => (
+                            <div className='d-flex  gap-3' key={index}>
+                                <p className=''>⦿ <span className='fw-bold'>Country:</span> {data?.country.name}</p>
+                                <p>⦿ <span className='fw-bold'>Phone:</span> {data?.phone}</p>
+                            </div>
+                        ))
+                    }
+
+
+                    <div className="d-flex justify-content-center mt-5 gap-3 mb-5">
+                        <button className="btn btn-lg btn-outline-primary" type="button" onClick={handleAllContactsClick}>All Contacts</button>
                         <button className="btn btn-lg btn-outline-success" type="button" >US Contacts</button>
                         <button className="btn btn-lg btn-danger" type="button" onClick={props.onHide} >Close</button>
                     </div>
@@ -168,6 +229,46 @@ const Problem2 = () => {
             </Modal>
         );
     }
+
+
+
+
+
+
+
+
+    function MyVerticallyCenteredModalC(props) {
+        return (
+            <Modal
+                {...props}
+                size="md"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        <p >Modal C</p>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+
+                    <div>
+                        <p><span className='fw-bold'>Country Name:</span> {modalCData?.country.name}</p>
+                        <p><span className='fw-bold'>Country ID:</span> {modalCData?.country.id}</p>
+                        <p><span className='fw-bold'>Phone Number:</span> {modalCData?.phone}</p>
+                    </div>
+
+                </Modal.Body>
+
+
+
+            </Modal>
+        );
+    }
+
+
+
+
 
 
 
@@ -216,6 +317,11 @@ const Problem2 = () => {
             <MyVerticallyCenteredModal1
                 show={modalShow1}
                 onHide={() => setModalShow1(false)}
+            />
+
+            <MyVerticallyCenteredModalC
+                show={modalShowC}
+                onHide={() => setModalShowC(false)}
             />
 
 
