@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import BangladeshFlag from '../images/Bangladesh.jpg';
 import USAFlag from '../images/USA.png';
+import AbkhaziaFlag from '../images/Abkhazia.jpeg';
 import './Problem-2.css';
 import { Link } from 'react-router-dom';
+import { PiArrowFatLinesDownFill } from 'react-icons/pi';
 
 
 
@@ -14,8 +16,29 @@ import { Link } from 'react-router-dom';
 
 
 const ModalA = () => {
+
+
+
+
+    const [countriesData, setCountriesData] = useState([])
+    useEffect(() => {
+        fetch("https://restcountries.com/v3.1/all")
+            .then((res) => res.json())
+            .then((data) => setCountriesData(data));
+    }, []);
+
+
+
+
+
     const [showModal, setShowModal] = useState(true);
     const handleClose = () => setShowModal(false);
+
+
+
+    useEffect(() => {
+        setShowModal(true);
+    }, []);
 
 
 
@@ -63,7 +86,7 @@ const ModalA = () => {
     const handleCheckBoxClicked = () => {
         setChecked((prevChecked) => !prevChecked);
         if (checked === true) {
-            const newFilter = allContacts?.length > 0 && allContacts.filter(data => data.country.id === 2 || data.country.id === 4 || data.country.id === 6 || data.country.id === 8 || data.country.id === 10 || data.country.id === 12 || data.country.id === 14 || data.country.id === 16 || data.country.id === 18 || data.country.id === 20 || data.country.id === 22 || data.country.id === 24 || data.country.id === 26 || data.country.id === 28 || data.country.id === 30)
+            const newFilter = allContacts?.length > 0 && modalAPIData.filter(data => data.country.id === 2 || data.country.id === 4 || data.country.id === 6 || data.country.id === 8 || data.country.id === 10 || data.country.id === 12 || data.country.id === 14 || data.country.id === 16 || data.country.id === 18 || data.country.id === 20 || data.country.id === 22 || data.country.id === 24 || data.country.id === 26 || data.country.id === 28 || data.country.id === 30)
             setFilterData(newFilter);
         }
         else {
@@ -75,15 +98,68 @@ const ModalA = () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
     const [modalShowC, setModalShowC] = useState(false);
     const [modalCData, setModalCData] = useState(null)
-    const handleOpenModalC = (data) => {
+    const [modalCFlagData, setModalCFlagData] = useState(null)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const handleOpenModalC = (data, newData) => {
         console.log("Data: ", data);
+        console.log("New Data: ", newData);
         setModalCData(data);
-        // setModalShow(false);
-        // setModalShow1(false)
         setModalShowC(true);
+        const filterData = newData.find(item => item?.countryName === data?.country?.name)
+        console.log("Sakib: ", filterData);
+        setModalCFlagData(filterData);
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     function MyVerticallyCenteredModalC(props) {
@@ -94,81 +170,44 @@ const ModalA = () => {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">
+                <Modal.Header closeButton className='modal-bg-header'>
+                    <Modal.Title id="contained-modal-title-vcenter" >
                         <p >Modal C</p>
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
 
+
+                <Modal.Body className='modal-bg-body'>
                     <div>
                         <p><span className='fw-bold'>Country Name:</span> {modalCData?.country.name}</p>
                         <p><span className='fw-bold'>Country ID:</span> {modalCData?.country.id}</p>
                         <p><span className='fw-bold'>Phone Number:</span> {modalCData?.phone}</p>
-                        {
-                            modalCData?.country.name === 'Bangladesh' &&
-                            <div>
-                                <img className='flag-width mx-auto' src={BangladeshFlag} alt="Flag" />
-                            </div>
-                        }
-
-                        {
-                            modalCData?.country.name === 'United States' &&
-                            <div>
-                                <img className='flag-width mx-auto' src={USAFlag} alt="Flag" />
-                            </div>
-                        }
-
+                        <div>
+                            {
+                                modalCData?.country?.name === 'Abkhazia' ?
+                                    <>
+                                        <img className='flag-width mx-auto' src={AbkhaziaFlag} alt="Abkhazia Flag" />
+                                    </>
+                                    :
+                                    <>
+                                        <img className='flag-width mx-auto' src={modalCFlagData?.flagImage} alt={modalCData?.country.name + 'Flag'} />
+                                    </>
+                            }
+                        </div>
                     </div>
 
                 </Modal.Body>
-
-
 
             </Modal>
         );
     }
 
 
-
-
-
-
-
-
-
-
     const [modalAPIData, setModalAPIData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
 
-
-
-    const loadMoreData = async () => {
-        if (loading) return;
-
-        try {
-            setLoading(true);
-            setShowModal(true);
-            const response = await fetch(`https://contact.mediusware.com/api/contacts/?page=${currentPage}`);
-            const newData = await response.json();
-            setModalAPIData((prevData) => [...prevData, ...newData.results]);
-            setCurrentPage((prevPage) => prevPage + 1);
-        } catch (error) {
-            console.error('API fetch error:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        if (showModal) {
-            loadMoreData();
-        }
-    }, [showModal]);
-
-    const handleModalScroll = (e) => {
-        console.log('Scrolled');
+    const handleScrollToBottom = (e) => {
         const modal = e.target;
         if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
             console.log('Reached bottom');
@@ -177,6 +216,76 @@ const ModalA = () => {
     };
 
 
+    const loadMoreData = async () => {
+        if (currentPage < 31) {
+            try {
+                setLoading(true);
+                setShowModal(true);
+                const response = await fetch(`https://contact.mediusware.com/api/contacts/?page=${currentPage}`);
+                const newData = await response.json();
+                setModalAPIData((prevData) => [...prevData, ...newData.results]);
+                setCurrentPage((prevPage) => prevPage + 1);
+            }
+            catch (error) {
+                console.error('error:', error);
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+    };
+
+
+    useEffect(() => {
+        if (showModal) {
+            loadMoreData();
+        }
+    }, [showModal]);
+
+
+    const handleModalScroll = (e) => {
+        console.log('Scrolled');
+        const modal = e.target;
+        if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
+            console.log('Reached bottom');
+            loadMoreData();
+        }
+
+    };
+
+    const mappedData = modalAPIData.map((api2Country) => {
+        const matchingCountry = countriesData.find((api1Country) =>
+            api1Country?.name?.common === api2Country?.country?.name
+        );
+
+        if (matchingCountry) {
+            return {
+                countryName: api2Country?.country?.name,
+                flagImage: matchingCountry?.flags?.png,
+            };
+        }
+
+        return null;
+    });
+
+
+
+
+
+
+
+
+    // Create a Set to keep track of unique country names
+    const uniqueCountryNames = new Set();
+
+    // Filter the items array to keep only one unique item for each name
+    const uniqueItems = filterData.filter((item) => {
+        if (!uniqueCountryNames.has(item?.country?.name)) {
+            uniqueCountryNames.add(item?.country?.name);
+            return true;
+        }
+        return false;
+    });
 
 
 
@@ -189,8 +298,12 @@ const ModalA = () => {
 
 
 
-
-
+    const modalContentRef = useRef(null);
+    const scrollToBottom = () => {
+        if (modalContentRef.current) {
+            modalContentRef.current.scrollTop = modalContentRef.current.scrollHeight;
+        }
+    };
 
 
 
@@ -207,18 +320,35 @@ const ModalA = () => {
 
 
 
-            <Modal scrollable={true} size="lg" show={showModal} onHide={handleClose} onScroll={(e) => handleModalScroll()}>
+            <Modal scrollable={true} size="lg" show={showModal} onHide={() => setShowModal(false)}>
+
                 <Modal.Header closeButton>
                     <Modal.Title>Modal A</Modal.Title>
+                    <Modal.Title className='mt-3 ms-2'>
+                        <PiArrowFatLinesDownFill
+                            size={45}
+                            className='pulse-animation text-primary icon-class'
+                            title='Go To Bottom'
+                            onClick={scrollToBottom}
+                            data-mdb-toggle="animation"
+                            data-mdb-animation-reset="true"
+                            data-mdb-animation="slide-out-right"
+                        >
+                        </PiArrowFatLinesDownFill>
+
+                    </Modal.Title>
+
                 </Modal.Header>
 
-                <Modal.Body>
+                <Modal.Body ref={modalContentRef} onScroll={handleScrollToBottom}>
+
+
                     {
                         checked === true ?
                             <>
                                 {
-                                    filterData?.map((data, index) => (
-                                        <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                    uniqueItems?.map((data, index) => (
+                                        <div onClick={() => handleOpenModalC(data, mappedData)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
                                             <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold text-primary`}>{data?.country.name}</span></p>
                                             <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold text-primary`}>{data?.phone}</span></p>
                                             <p>⦿ <span className='fw-bold'>ID:</span> <span className={`fw-bold text-primary`}>{data?.country.id}</span></p>
@@ -231,37 +361,9 @@ const ModalA = () => {
                             <>
                                 {
                                     modalAPIData?.map((data, index) => (
-                                        <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
-
-
+                                        <div onClick={() => handleOpenModalC(data, mappedData)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
                                             <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold`}>{data?.country.name}</span></p>
                                             <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold`}>{data?.phone}</span></p>
-
-
-                                            {/* {
-                                                data?.country.name === 'United States'
-                                                    ?
-                                                    <>
-                                                        <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold text-primary`}>{data?.country.name}</span></p>
-                                                        <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold text-primary`}>{data?.phone}</span></p>
-                                                    </>
-                                                    :
-                                                    <>
-                                                        {
-                                                            data?.country.name === 'Bangladesh' ?
-                                                                <>
-                                                                    <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold text-success`}>{data?.country.name}</span></p>
-                                                                    <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold text-success`}>{data?.phone}</span></p>
-                                                                </>
-                                                                :
-                                                                <>
-                                                                    <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold text-dark`}>{data?.country.name}</span></p>
-                                                                    <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold text-dark`}>{data?.phone}</span></p>
-                                                                </>
-                                                        }
-                                                    </>
-                                            } */}
-
                                         </div>
                                     ))
                                 }
@@ -269,18 +371,9 @@ const ModalA = () => {
 
                                 {loading && <div className='text-center text-primary fs-4'>Loading...</div>}
 
-
-
-
-
-
-
                             </>
-
-
-
-
                     }
+
 
                     <div className="d-flex justify-content-center mt-5 gap-3">
                         <button className="custom-colorA" type="button">All Contacts</button>
@@ -291,37 +384,32 @@ const ModalA = () => {
 
                         <button className="custom-colorC" type="button" onClick={handleClose} >Close</button>
                     </div>
-                </Modal.Body>
 
 
-                <div className='container'>
-                    <div className="row justify-content-center">
-                        <div className='col-md-6 mx-auto '>
-                            <div className="input-group mt-3 ml-6  mb-5">
-                                <div className="border border-success p-2 input-group-text">
-                                    <input id="checkbox"
-                                        checked={checked}
-                                        onChange={handleCheckBoxClicked}
-                                        className="form-check-input mt-0 border border-dark p-2"
-                                        type="checkbox"
-                                        value=""
-                                        aria-label="Checkbox for following text input"
-                                    />
-                                </div>
-                                <input type="text" className="form-control border border-success p-2" aria-label="Text input with checkbox" placeholder='Only Even'></input>
-                            </div>
-                        </div>
+
+                    <div className="text-start  mt-4 mb-3">
+                        <label className='border border-success border-2 rounded-1 px-3 py-1'>
+                            <input
+                                id="checkbox"
+                                checked={checked}
+                                onChange={handleCheckBoxClicked}
+                                className="mt-1 form-check-input mt-0 border border-2 border-dark p-2"
+                                type="checkbox"
+                                value=""
+                                aria-label="Checkbox for following text input"
+                            /> <span className='fw-bold mt-1 ml-2'>Only Even</span>
+                        </label>
                     </div>
-                </div>
 
+                </Modal.Body>
             </Modal>
-
 
 
             <MyVerticallyCenteredModalC
                 show={modalShowC}
                 onHide={() => setModalShowC(false)}
             />
+
 
         </div>
     );
