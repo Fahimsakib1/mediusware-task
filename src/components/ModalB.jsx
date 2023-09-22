@@ -131,7 +131,7 @@ const ModalB = () => {
                         </Link>
 
                         <button className="custom-colorB" type="button" >US Contacts</button>
-                        <button className="btn btn-lg btn-danger" type="button" onClick={handleClose} >Close</button>
+                        <button className="custom-colorC" type="button" onClick={handleClose} >Close</button>
                     </div>
                 </Modal.Body>
 

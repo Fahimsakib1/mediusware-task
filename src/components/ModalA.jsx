@@ -26,7 +26,7 @@ const ModalA = () => {
     const [allContacts, setAllContacts] = useState([])
 
     useEffect(() => {
-        fetch('https://contact.mediusware.com/api/contacts/')
+        fetch('https://contact.mediusware.com/api/contacts/?page=1')
             .then(res => res.json())
             .then(data => setAllContacts(data.results))
     }, [])
@@ -35,7 +35,7 @@ const ModalA = () => {
         setModalShow(true);
         setModalShow1(false);
         setModalShowC(false);
-        fetch('https://contact.mediusware.com/api/contacts/')
+        fetch('https://contact.mediusware.com/api/contacts/?page=1')
             .then(res => res.json())
             .then(data => setAllContacts(data.results))
         setChecked(false);
@@ -138,6 +138,64 @@ const ModalA = () => {
 
 
 
+    const [modalAPIData, setModalAPIData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+
+
+    const loadMoreData = async () => {
+        if (loading) return;
+
+        try {
+            setLoading(true);
+            setShowModal(true);
+            const response = await fetch(`https://contact.mediusware.com/api/contacts/?page=${currentPage}`);
+            const newData = await response.json();
+            setModalAPIData((prevData) => [...prevData, ...newData.results]);
+            setCurrentPage((prevPage) => prevPage + 1);
+        } catch (error) {
+            console.error('API fetch error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showModal) {
+            loadMoreData();
+        }
+    }, [showModal]);
+
+    const handleModalScroll = (e) => {
+        console.log('Scrolled');
+        const modal = e.target;
+        if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
+            console.log('Reached bottom');
+            loadMoreData();
+        }
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -147,7 +205,9 @@ const ModalA = () => {
         <div>
             <h1 className='text-center mt-5 mb-5'>Modal A</h1>
 
-            <Modal size="lg" show={showModal} onHide={handleClose}>
+
+
+            <Modal scrollable={true} size="lg" show={showModal} onHide={handleClose} onScroll={(e) => handleModalScroll()}>
                 <Modal.Header closeButton>
                     <Modal.Title>Modal A</Modal.Title>
                 </Modal.Header>
@@ -170,10 +230,15 @@ const ModalA = () => {
                             :
                             <>
                                 {
-                                    allContacts?.map((data, index) => (
+                                    modalAPIData?.map((data, index) => (
                                         <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
 
-                                            {
+
+                                            <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold`}>{data?.country.name}</span></p>
+                                            <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold`}>{data?.phone}</span></p>
+
+
+                                            {/* {
                                                 data?.country.name === 'United States'
                                                     ?
                                                     <>
@@ -195,11 +260,20 @@ const ModalA = () => {
                                                                 </>
                                                         }
                                                     </>
-                                            }
+                                            } */}
 
                                         </div>
                                     ))
                                 }
+
+
+                                {loading && <div className='text-center text-primary fs-4'>Loading...</div>}
+
+
+
+
+
+
 
                             </>
 
@@ -214,8 +288,8 @@ const ModalA = () => {
                         <Link to='/problem-2/modalB'>
                             <button className="custom-colorBNew" type="button" >US Contacts</button>
                         </Link>
-                        
-                        <button className="btn btn-lg btn-danger" type="button" onClick={handleClose} >Close</button>
+
+                        <button className="custom-colorC" type="button" onClick={handleClose} >Close</button>
                     </div>
                 </Modal.Body>
 
