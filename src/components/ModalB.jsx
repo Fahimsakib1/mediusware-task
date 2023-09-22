@@ -127,10 +127,10 @@ const ModalB = () => {
                     <div className="d-flex justify-content-center mt-5 gap-3 mb-5">
                         
                         <Link to='/problem-2/modalA'  onClick={handleAllContactsClick}>
-                            <button  className="btn btn-lg btn-outline-primary" type="button">All Contacts</button>
+                            <button  className="custom-colorANew" type="button">All Contacts</button>
                         </Link>
 
-                        <button className="btn btn-lg btn-outline-success" type="button" >US Contacts</button>
+                        <button className="custom-colorB" type="button" >US Contacts</button>
                         <button className="btn btn-lg btn-danger" type="button" onClick={handleClose} >Close</button>
                     </div>
                 </Modal.Body>

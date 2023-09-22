@@ -209,10 +209,10 @@ const ModalA = () => {
                     }
 
                     <div className="d-flex justify-content-center mt-5 gap-3">
-                        <button className="btn btn-lg btn-outline-primary" type="button">All Contacts</button>
+                        <button className="custom-colorA" type="button">All Contacts</button>
 
                         <Link to='/problem-2/modalB'>
-                            <button className="btn btn-lg btn-outline-warning" type="button" >US Contacts</button>
+                            <button className="custom-colorBNew" type="button" >US Contacts</button>
                         </Link>
                         
                         <button className="btn btn-lg btn-danger" type="button" onClick={handleClose} >Close</button>

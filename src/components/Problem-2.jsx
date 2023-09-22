@@ -308,11 +308,11 @@ const Problem2 = () => {
                     <div className="d-flex justify-content-center gap-3">
 
                         <Link to='/problem-2/modalA'  onClick={handleAllContactsClick}>
-                            <button  className="btn btn-lg btn-outline-primary" type="button">All Contacts</button>
+                            <button  className="customA" type="button">All Contacts</button>
                         </Link>
 
                         <Link to='/problem-2/modalB'>
-                            <button className="btn btn-lg btn-outline-warning" type="button" onClick={handleUSContactsClick}>US Contacts</button>
+                            <button className="customB" type="button" onClick={handleUSContactsClick}>US Contacts</button>
                         </Link>
 
                     </div>
