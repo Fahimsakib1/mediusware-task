@@ -5,7 +5,8 @@ import BangladeshFlag from '../images/Bangladesh.jpg';
 import USAFlag from '../images/USA.png';
 import './Problem-2.css';
 import { Link } from 'react-router-dom';
-
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 
@@ -110,7 +111,21 @@ const ModalB = () => {
 
 
 
-
+    const [searchInput, setSearchInput] = useState('');
+    const [searchInputAfterButtonClicked, setSearchInputAfterButtonClicked] = useState('');
+    const handleGetSearchInput = (e) => {
+        setSearchInput(e.target.value);
+    }
+    const handleSearch = (e) => {
+        console.log("Search Input: ", searchInput);
+        setSearchInputAfterButtonClicked(searchInput);
+        // setSearchInput('');
+    }
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
 
 
 
@@ -207,10 +222,27 @@ const ModalB = () => {
             <Modal scrollable={true} size="lg" show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Modal B</Modal.Title>
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            value={searchInput}
+                            onChange={handleGetSearchInput}
+                            onKeyPress={handleKeyPress}
+                            className='border border-secondary'
+                            placeholder="Search Here"
+                            aria-label="Recipient's username"
+                            aria-describedby="basic-addon2"
+                        />
+                        <Button onClick={handleSearch} className='px-3' variant="primary" id="button-addon2">
+                            Search
+                        </Button>
+                    </InputGroup>
                 </Modal.Header>
 
                 <Modal.Body onScroll={handleScrollToBottom}>
-                    {
+
+
+
+                    {/* {
                         USContacts?.map((data, index) => (
                             <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
                                 <p className=''>⦿ <span className='fw-bold'>ID:</span> <span className='fw-bold text-primary'>{data?.id}</span></p>
@@ -218,7 +250,57 @@ const ModalB = () => {
                                 <p>⦿ <span className='fw-bold'>Phone:</span> <span className='fw-bold text-primary'>{data?.phone}</span></p>
                             </div>
                         ))
+                    } */}
+
+
+
+
+                    {
+                        searchInputAfterButtonClicked?.length > 0
+                        &&
+                        <>
+                            {
+                                USContacts.filter((data) => {
+                                    return searchInputAfterButtonClicked.toLowerCase() === ''
+                                        ?
+                                        data
+                                        :
+                                        data?.country?.name.includes(searchInputAfterButtonClicked) || data?.country?.name.toLowerCase().includes(searchInputAfterButtonClicked) || data?.country?.name.toUpperCase().includes(searchInputAfterButtonClicked) || data?.phone.includes(searchInputAfterButtonClicked) || data?.phone.toLowerCase().includes(searchInputAfterButtonClicked) || data?.phone.toUpperCase().includes(searchInputAfterButtonClicked) 
+                                }).map((data, index) => (
+                                    <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                        <p className=''>⦿ <span className='fw-bold'>ID:</span> <span className='fw-bold text-primary'>{data?.id}</span></p>
+                                        <p className=''>⦿ <span className='fw-bold'>Country:</span> <span className='fw-bold text-primary'>{data?.country.name}</span></p>
+                                        <p>⦿ <span className='fw-bold'>Phone:</span> <span className='fw-bold text-primary'>{data?.phone}</span></p>
+                                    </div>
+                                ))
+                            }
+                        </>
                     }
+
+
+
+
+                    {
+                        searchInput?.length === 0
+                        &&
+                        <>
+                            {
+                                modalAPIData?.map((data, index) => (
+                                    <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                        <p className=''>⦿ <span className='fw-bold'>ID:</span> <span className='fw-bold text-primary'>{data?.id}</span></p>
+                                        <p className=''>⦿ <span className='fw-bold'>Country:</span> <span className='fw-bold text-primary'>{data?.country.name}</span></p>
+                                        <p>⦿ <span className='fw-bold'>Phone:</span> <span className='fw-bold text-primary'>{data?.phone}</span></p>
+                                    </div>
+                                ))
+                            }
+                        </>
+                    }
+
+
+
+
+
+
 
                     {loading && <div className='text-center text-success fs-4'>Loading...</div>}
 

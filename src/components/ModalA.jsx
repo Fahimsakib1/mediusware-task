@@ -7,7 +7,8 @@ import AbkhaziaFlag from '../images/Abkhazia.jpeg';
 import './Problem-2.css';
 import { Link } from 'react-router-dom';
 import { PiArrowFatLinesDownFill } from 'react-icons/pi';
-
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 
 
@@ -314,6 +315,31 @@ const ModalA = () => {
 
 
 
+    const [searchInput, setSearchInput] = useState('');
+    const [searchInputAfterButtonClicked, setSearchInputAfterButtonClicked] = useState('');
+    const handleGetSearchInput = (e) => {
+        setSearchInput(e.target.value);
+    }
+    const handleSearch = (e) => {
+        console.log("Search Input: ", searchInput);
+        setSearchInputAfterButtonClicked(searchInput);
+        // setSearchInput('');
+    }
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
+
+
+
+
+
+
+
+
+
     return (
         <div>
             <h1 className='text-center mt-5 mb-5'>Modal A</h1>
@@ -323,6 +349,7 @@ const ModalA = () => {
             <Modal scrollable={true} size="lg" show={showModal} onHide={() => setShowModal(false)}>
 
                 <Modal.Header closeButton>
+
                     <Modal.Title>Modal A</Modal.Title>
                     <Modal.Title className='mt-3 ms-2'>
                         <PiArrowFatLinesDownFill
@@ -335,13 +362,49 @@ const ModalA = () => {
                             data-mdb-animation="slide-out-right"
                         >
                         </PiArrowFatLinesDownFill>
-
                     </Modal.Title>
+
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            value={searchInput}
+                            onChange={handleGetSearchInput}
+                            onKeyPress={handleKeyPress}
+                            className='border border-secondary'
+                            placeholder="Search Here"
+                            aria-label="Recipient's username"
+                            aria-describedby="basic-addon2"
+                        />
+                        <Button onClick={handleSearch} className='px-3' variant="primary" id="button-addon2">
+                            Search
+                        </Button>
+                    </InputGroup>
 
                 </Modal.Header>
 
-                <Modal.Body ref={modalContentRef} onScroll={handleScrollToBottom}>
 
+                {/* <Modal.Header>
+                    <InputGroup className="mb-3">
+                        <Form.Control
+                            value={searchInput}
+                            onChange={handleGetSearchInput}
+                            onKeyPress={handleKeyPress}
+                            className='border border-secondary'
+                            placeholder="Search Here"
+                            aria-label="Recipient's username"
+                            aria-describedby="basic-addon2"
+                        />
+                        <Button onClick={handleSearch} className='px-3' variant="primary" id="button-addon2">
+                            Search
+                        </Button>
+                    </InputGroup>
+                </Modal.Header> */}
+
+
+
+
+
+
+                <Modal.Body ref={modalContentRef} onScroll={handleScrollToBottom}>
 
                     {
                         checked === true ?
@@ -359,14 +422,46 @@ const ModalA = () => {
 
                             :
                             <>
+
                                 {
-                                    modalAPIData?.map((data, index) => (
-                                        <div onClick={() => handleOpenModalC(data, mappedData)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
-                                            <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold`}>{data?.country.name}</span></p>
-                                            <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold`}>{data?.phone}</span></p>
-                                        </div>
-                                    ))
+                                    searchInputAfterButtonClicked?.length > 0
+                                    &&
+                                    <>
+                                        {
+                                            modalAPIData.filter((data) => {
+                                                return searchInputAfterButtonClicked.toLowerCase() === ''
+                                                    ?
+                                                    data
+                                                    :
+                                                    data?.country?.name.includes(searchInputAfterButtonClicked) || data?.country?.name.toLowerCase().includes(searchInputAfterButtonClicked) || data?.country?.name.toUpperCase().includes(searchInputAfterButtonClicked) || data?.phone.includes(searchInputAfterButtonClicked) || data?.phone.toLowerCase().includes(searchInputAfterButtonClicked) || data?.phone.toUpperCase().includes(searchInputAfterButtonClicked)
+                                            }).map((data, index) => (
+                                                <div onClick={() => handleOpenModalC(data, mappedData)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                                    <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold`}>{data?.country.name}</span></p>
+                                                    <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold`}>{data?.phone}</span></p>
+                                                </div>
+                                            ))
+                                        }
+                                    </>
                                 }
+
+
+
+
+                                {
+                                    searchInput?.length === 0
+                                    &&
+                                    <>
+                                        {
+                                            modalAPIData?.map((data, index) => (
+                                                <div onClick={() => handleOpenModalC(data, mappedData)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
+                                                    <p className=''>⦿ <span className={`fw-bold `}>Country:</span> <span className={`fw-bold`}>{data?.country.name}</span></p>
+                                                    <p>⦿ <span className='fw-bold'>Phone:</span> <span className={`fw-bold`}>{data?.phone}</span></p>
+                                                </div>
+                                            ))
+                                        }
+                                    </>
+                                }
+
 
 
                                 {loading && <div className='text-center text-primary fs-4'>Loading...</div>}
