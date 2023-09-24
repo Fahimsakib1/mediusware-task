@@ -211,7 +211,7 @@ const ModalA = () => {
     const handleScrollToBottom = (e) => {
         const modal = e.target;
         if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
-            console.log('Reached bottom');
+            console.log('Reached bottom Modal A');
             loadMoreData();
         }
     };
@@ -243,9 +243,7 @@ const ModalA = () => {
         }
     }, [showModal]);
 
-
     const handleModalScroll = (e) => {
-        console.log('Scrolled');
         const modal = e.target;
         if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
             console.log('Reached bottom');
@@ -258,14 +256,12 @@ const ModalA = () => {
         const matchingCountry = countriesData.find((api1Country) =>
             api1Country?.name?.common === api2Country?.country?.name
         );
-
         if (matchingCountry) {
             return {
                 countryName: api2Country?.country?.name,
                 flagImage: matchingCountry?.flags?.png,
             };
         }
-
         return null;
     });
 
@@ -278,8 +274,6 @@ const ModalA = () => {
 
     // Create a Set to keep track of unique country names
     const uniqueCountryNames = new Set();
-
-    // Filter the items array to keep only one unique item for each name
     const uniqueItems = filterData.filter((item) => {
         if (!uniqueCountryNames.has(item?.country?.name)) {
             uniqueCountryNames.add(item?.country?.name);
@@ -364,7 +358,7 @@ const ModalA = () => {
                         </PiArrowFatLinesDownFill>
                     </Modal.Title>
 
-                    <InputGroup className="mb-3">
+                    <InputGroup className="mb-3 w-50 mx-auto">
                         <Form.Control
                             value={searchInput}
                             onChange={handleGetSearchInput}
@@ -380,28 +374,6 @@ const ModalA = () => {
                     </InputGroup>
 
                 </Modal.Header>
-
-
-                {/* <Modal.Header>
-                    <InputGroup className="mb-3">
-                        <Form.Control
-                            value={searchInput}
-                            onChange={handleGetSearchInput}
-                            onKeyPress={handleKeyPress}
-                            className='border border-secondary'
-                            placeholder="Search Here"
-                            aria-label="Recipient's username"
-                            aria-describedby="basic-addon2"
-                        />
-                        <Button onClick={handleSearch} className='px-3' variant="primary" id="button-addon2">
-                            Search
-                        </Button>
-                    </InputGroup>
-                </Modal.Header> */}
-
-
-
-
 
 
                 <Modal.Body ref={modalContentRef} onScroll={handleScrollToBottom}>
@@ -422,6 +394,7 @@ const ModalA = () => {
 
                             :
                             <>
+
 
                                 {
                                     searchInputAfterButtonClicked?.length > 0

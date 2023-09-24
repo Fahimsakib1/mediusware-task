@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import BangladeshFlag from '../images/Bangladesh.jpg';
@@ -20,7 +20,7 @@ const ModalB = () => {
 
     const [USContacts, setUSContacts] = useState([])
     useEffect(() => {
-        fetch('https://contact.mediusware.com/api/country-contacts/United States/')
+        fetch('https://contact.mediusware.com/api/country-contacts/United States/?page=1')
             .then(res => res.json())
             .then(data => setUSContacts(data.results))
     }, [])
@@ -60,20 +60,24 @@ const ModalB = () => {
 
 
 
-    const handleScrollToBottom = (e) => {
-        const modal = e.target;
-        if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
-            console.log('Reached bottom B');
-            loadMoreData();
-        }
-    };
+
 
     const [modalAPIData, setModalAPIData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(false);
+
+    const handleScrollToBottom = (e) => {
+        const modal = e.target;
+        if (modal.scrollTop + modal.clientHeight >= modal.scrollHeight) {
+            console.log('Reached Bottom Modal B');
+            loadMoreData();
+        }
+    };
+
     const loadMoreData = async () => {
         if (currentPage < 3) {
             try {
+                console.log('SAAAAKIIB');
                 setLoading(true);
                 setShowModal(true);
                 const response = await fetch(`https://contact.mediusware.com/api/country-contacts/United States/?page=${currentPage}`);
@@ -89,8 +93,6 @@ const ModalB = () => {
             }
         }
     };
-
-
     useEffect(() => {
         if (showModal) {
             loadMoreData();
@@ -100,7 +102,7 @@ const ModalB = () => {
 
 
 
-    console.log("Modal API: ", modalAPIData);
+    console.log("Modal API Modal B: ", modalAPIData);
 
 
 
@@ -117,7 +119,7 @@ const ModalB = () => {
         setSearchInput(e.target.value);
     }
     const handleSearch = (e) => {
-        console.log("Search Input: ", searchInput);
+        console.log("Search Input Inside: ", searchInput);
         setSearchInputAfterButtonClicked(searchInput);
         // setSearchInput('');
     }
@@ -126,6 +128,11 @@ const ModalB = () => {
             handleSearch();
         }
     };
+
+
+
+
+
 
 
 
@@ -222,7 +229,7 @@ const ModalB = () => {
             <Modal scrollable={true} size="lg" show={showModal} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Modal B</Modal.Title>
-                    <InputGroup className="mb-3">
+                    <InputGroup className="mb-3 w-50 mx-auto">
                         <Form.Control
                             value={searchInput}
                             onChange={handleGetSearchInput}
@@ -253,19 +260,19 @@ const ModalB = () => {
                     } */}
 
 
-
+                    
 
                     {
                         searchInputAfterButtonClicked?.length > 0
                         &&
                         <>
                             {
-                                USContacts.filter((data) => {
+                                modalAPIData.filter((data) => {
                                     return searchInputAfterButtonClicked.toLowerCase() === ''
                                         ?
                                         data
                                         :
-                                        data?.country?.name.includes(searchInputAfterButtonClicked) || data?.country?.name.toLowerCase().includes(searchInputAfterButtonClicked) || data?.country?.name.toUpperCase().includes(searchInputAfterButtonClicked) || data?.phone.includes(searchInputAfterButtonClicked) || data?.phone.toLowerCase().includes(searchInputAfterButtonClicked) || data?.phone.toUpperCase().includes(searchInputAfterButtonClicked) 
+                                        data?.country?.name.includes(searchInputAfterButtonClicked) || data?.country?.name.toLowerCase().includes(searchInputAfterButtonClicked) || data?.country?.name.toUpperCase().includes(searchInputAfterButtonClicked) || data?.phone.includes(searchInputAfterButtonClicked) || data?.phone.toLowerCase().includes(searchInputAfterButtonClicked) || data?.phone.toUpperCase().includes(searchInputAfterButtonClicked)
                                 }).map((data, index) => (
                                     <div onClick={() => handleOpenModalC(data)} className='d-flex  gap-3 bg-color-on-hover' key={index}>
                                         <p className=''>⦿ <span className='fw-bold'>ID:</span> <span className='fw-bold text-primary'>{data?.id}</span></p>
@@ -297,12 +304,9 @@ const ModalB = () => {
                     }
 
 
-
-
-
-
-
                     {loading && <div className='text-center text-success fs-4'>Loading...</div>}
+
+
 
 
                     <div className="d-flex justify-content-center mt-5 gap-3 mb-5">
